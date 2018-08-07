@@ -1,0 +1,18 @@
+{
+  "name": "bobblehead-module-framework7",
+  "version": "1.0.0",
+  "description": "A module for BobbleHeadJS to include Framework7 functionality in the framework structure.",
+  "main": "./dist/main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "webpack-dev-server --open --config webpack.dev.js",
+    "build": "webpack --config webpack.prod.js"
+  },
+  "keywords": [],
+  "author": {
+    "name": "Andrea Postiglione",
+    "email": "andrea0postiglione@gmail.com"
+  },
+  "license": "Apache-2.0",
+  "dependencies": {}
+}
