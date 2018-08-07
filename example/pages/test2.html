@@ -1,0 +1,44 @@
+<div class="page" data-name="about">
+  <div class="navbar">
+    <div class="navbar-inner sliding">
+      <div class="left">
+        <a href="#" class="link back">
+          <i class="icon icon-back"></i>
+          <span class="ios-only">Back</span>
+        </a>
+      </div>
+      <div class="title">BobbleHead Test</div>
+    </div>
+  </div>
+  <div class="page-content">
+		<div class="block block-strong" bbh-module="test">
+			<span>Plugin test:</span>
+		</div>
+		<div class="block-title">Test Mustache</div>
+		<div class="block block-strong">
+			<span>Configuration Test: {{#pageConf.test}}{{.}}{{/pageConf.test}}{{^pageConf.test}}Fail{{/pageConf.test}}</span>
+		</div>
+		<div class="block block-strong">
+			<p>Test Model: {{models.testModel.345.result}}</p>
+		</div>
+		<div class="block">
+			<div class="row">
+				<a class="link col-100" href="app://page/back" >
+					<button class="col button button-fill">Back</button>
+				</a>
+			</div>
+		</div>
+		<div class="block-title">Test Form</div>
+		<div class="block block-strong">
+			<p>{{#pageData.testForm}}{{.}}{{/pageData.testForm}}{{^pageData.testForm}}Not Tested{{/pageData.testForm}}</p>
+		</div>
+		<div class="block">
+			<div class="row">
+				<form method="post" class="col-100" action="app://page/6">
+					<input type="hidden" name="testForm" value="Success" />
+					<button class="col button button-fill" type="submit">Test</button>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>

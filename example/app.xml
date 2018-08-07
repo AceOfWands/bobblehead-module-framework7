@@ -1,0 +1,52 @@
+<configuration>
+	<version>0.0.1</version>
+	<container>app-content</container>
+	<pageBuilder>Framework7Module_PageBuilder</pageBuilder>
+	<pages path="./pages/">
+		<index vid="1">
+			<data>
+				<start_test>Success</start_test>
+			</data>
+		</index>
+		<page vid="1" noback="true" keepLive="true" allowDuplicate="true" path="test.html">
+			<configuration>
+			</configuration>
+		</page>
+		<page vid="2" noback="false" keepLive="true" allowDuplicate="true" path="about.html">
+			<configuration>
+			</configuration>
+		</page>
+		<page vid="3" noback="false" keepLive="true" allowDuplicate="true" path="form.html">
+			<configuration>
+			</configuration>
+		</page>
+		<page vid="4" noback="false" keepLive="true" allowDuplicate="true" path="page-loader-component.html">
+			<configuration>
+				<type>component</type>
+			</configuration>
+		</page>
+		<page vid="5" noback="false" keepLive="true" allowDuplicate="true" path="404.html">
+			<configuration>
+			</configuration>
+		</page>
+		<page vid="6" noback="false" keepLive="true" allowDuplicate="true" path="test2.html" modulesAllowed="test">
+			<configuration>
+				<test>Success</test>
+			</configuration>
+		</page>
+	</pages>
+	<modules path="./modules/">
+		<module path="../../dist/main.js" enabled="true">
+			<configuration>
+				<root>#app-content</root>
+				<appid>it.test_frame7</appid>
+				<appname>Test_frame7</appname>
+			</configuration>
+		</module>
+		<module path="test/main.js" enabled="true">
+			<configuration>
+				<test>123456</test>
+			</configuration>
+		</module>
+	</modules>
+</configuration>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <!--
+  Customize this policy to fit your own app's needs. For more guidance, see:
+      https://github.com/apache/cordova-plugin-whitelist/blob/master/README.md#content-security-policy
+  Some notes:
+      * gap: is required only on iOS (when using UIWebView) and is needed for JS->native communication
+      * https://ssl.gstatic.com is required only on Android and is needed for TalkBack to function properly
+      * Disables use of inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
+          * Enable inline JS: add 'unsafe-inline' to default-src
+  -->
+  <meta http-equiv="Content-Security-Policy" content="default-src * 'self' 'unsafe-inline' 'unsafe-eval' data: gap: content:">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="theme-color" content="#2196f3">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="msapplication-tap-highlight" content="no">
+  <title>My App</title>
+
+  <link rel="stylesheet" href="./css/framework7.min.css">
+  <link rel="stylesheet" href="./css/icons.css">
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:200" rel="stylesheet">
+</head>
+<body>
+<div id="app-content" class="bbh-page" style="position: fixed;">
+	<div class="view">
+		<div class="page">
+			<div id="preloader" style="position: fixed;
+				left: 0; top: 0; z-index: 999; width: 100%; height: 100%;
+				overflow: visible; background: #fff url('./images/loading.gif') no-repeat center center;background-size: 8%;">
+			</div>
+			<div style="position: fixed;left: 50%;top: calc(50% + 70px);z-index: 1000;">
+				<div style="position: relative;left: -50%;text-align: center;font-family: 'Montserrat', sans-serif;">
+					<h1>Powered by</h1>
+					<h1>BobbleHeadCMS</h1>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script src="./js/framework7.min.js" async="false"></script>
+<script src="./js/bobblehead.min.js"></script>
+</body>
+</html>
