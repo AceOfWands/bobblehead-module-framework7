@@ -1,0 +1,5 @@
+<module name="framework7" version="1.0.0" path="./dist/" main="main.js">
+	<root></root>
+	<appid></appid>
+	<appname></appname>
+</module>
