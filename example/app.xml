@@ -8,27 +8,15 @@
 				<start_test>Success</start_test>
 			</data>
 		</index>
-		<page vid="1" noback="true" keepLive="true" allowDuplicate="true" path="test.html">
-			<configuration>
-			</configuration>
-		</page>
-		<page vid="2" noback="false" keepLive="true" allowDuplicate="true" path="about.html">
-			<configuration>
-			</configuration>
-		</page>
-		<page vid="3" noback="false" keepLive="true" allowDuplicate="true" path="form.html">
-			<configuration>
-			</configuration>
-		</page>
+		<page vid="1" noback="true" keepLive="true" allowDuplicate="true" path="test.html" />
+		<page vid="2" noback="false" keepLive="true" allowDuplicate="true" path="about.html" />
+		<page vid="3" noback="false" keepLive="true" allowDuplicate="true" path="form.html" />
 		<page vid="4" noback="false" keepLive="true" allowDuplicate="true" path="page-loader-component.html">
 			<configuration>
 				<type>component</type>
 			</configuration>
 		</page>
-		<page vid="5" noback="false" keepLive="true" allowDuplicate="true" path="404.html">
-			<configuration>
-			</configuration>
-		</page>
+		<page vid="5" noback="false" keepLive="true" allowDuplicate="true" path="404.html" />
 		<page vid="6" noback="false" keepLive="true" allowDuplicate="true" path="test2.html" modulesAllowed="test">
 			<configuration>
 				<test>Success</test>
