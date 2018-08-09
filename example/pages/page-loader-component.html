@@ -20,6 +20,16 @@
       <div class="block block-strong">
         <a href="#" class="button button-raised" @click="openAlert">Open Alert</a>
       </div>
+      <div class="block-title">Page Component Data</div>
+      <div class="block block-strong">
+        <p>Hello! My name is {{name}}. I am {{age}} years old.</p>
+        <p>I like to play:</p>
+        <ul>
+          {{#each like}}
+          <li>{{this}}</li>
+          {{/each}}
+        </ul>
+      </div>
       <div class="block-title">Extended Context</div>
       <div class="block block-strong">
         <p>Component page context as Template7 page context is also extended with some additional variables.</p>
@@ -34,6 +44,16 @@
         </ul>
 
         <h4>$root</h4>
+        <p>Root data & methods:</p>
+        <ul style="padding-left:25px">
+		  {{#$root.user}}
+          <li><b>$root.user.firstName</b>: {{$root.user.firstName}}</li>
+          <li><b>$root.user.lastName</b>: {{$root.user.lastName}}</li>
+		  {{/$root.user}}
+		  {{#$root.helloWorld}}
+          <li><a @click="$root.helloWorld()">$root.helloWorld()</a></li>
+		  {{/$root.helloWorld}}
+        </ul>
 
         <h4>$theme</h4>
         <p>Currently active theme:</p>
