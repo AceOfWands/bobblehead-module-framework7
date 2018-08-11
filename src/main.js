@@ -313,4 +313,4 @@ import Mustache from 'mustache';
 		}
 	};
 	app.registerModule(module);
-})(bobblehead);
+})(BobbleHead.app);

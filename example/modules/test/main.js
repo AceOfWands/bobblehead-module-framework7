@@ -6,7 +6,7 @@ m.manipulate = function(){
 		resolve();
 	}.bind(this));
 };
-bobblehead.registerModule(m);
+BobbleHead.app.registerModule(m);
 var model = new BobbleHead.Model('testModel');
 model.fetch = function(id){
 	return new Promise(resolve => setTimeout(resolve, 1000));
@@ -26,4 +26,4 @@ model.save = function(instance){
 model.destroy = function(instance){
 	
 };
-bobblehead.registerModel(model);
+BobbleHead.app.registerModel(model);

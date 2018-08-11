@@ -22,9 +22,14 @@
 				<test>Success</test>
 			</configuration>
 		</page>
+		<page vid="7" noback="false" keepLive="true" allowDuplicate="true" path="page-loader-template7.html">
+			<configuration>
+				<type>template</type>
+			</configuration>
+		</page>
 	</pages>
 	<modules path="./modules/">
-		<module path="../../dist/main.js" enabled="true">
+		<module path="../../dist/main.js" enabled="true" permissions="pages,models">
 			<configuration>
 				<root>#app-content</root>
 				<appid>it.test_frame7</appid>

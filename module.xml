@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<module name="framework7" version="1.0.0" path="./dist/" main="main.js">
+<module name="framework7" version="1.0.0" path="./dist/" main="main.js" permissions="pages,models">
 	<root></root>
 	<appid></appid>
 	<appname></appname>
