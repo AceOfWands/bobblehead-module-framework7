@@ -1,6 +1,6 @@
 {
   "name": "bobblehead-module-framework7",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A module for BobbleHeadJS to include Framework7 functionality in the framework structure.",
   "main": "./dist/main.js",
   "scripts": {
