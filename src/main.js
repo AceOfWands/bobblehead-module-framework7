@@ -40,7 +40,7 @@ import Mustache from 'mustache';
 							xhttp.onreadystatechange = async function(route, onSuccess, onFailure){
 								if(xhttp.readyState === XMLHttpRequest.DONE && xhttp.status === 404){
 									this.framework7.preloader.hide();
-									onFailure(new PageNotFoundException());
+									onFailure(new BobbleHead.Exceptions.PageNotFoundException());
 								}else if(xhttp.readyState === XMLHttpRequest.DONE){
 									if(!route.context)
 										route.context = {};
@@ -129,7 +129,7 @@ import Mustache from 'mustache';
 					if(!view)
 						view = module.framework7.views[0];
 					if(!view){
-						view = module.framework7.views.create(document.getElementById(this.container).querySelector('.view'));
+						view = module.framework7.views.create(_document.querySelector('.view'));
 						forceLock = true;
 					}
 					if(!this.pageStack[view.id])
@@ -182,7 +182,7 @@ import Mustache from 'mustache';
 					observer.observe(appContainer, { subtree: true, childList: true });
 					if((!configuration.getProperty('type') || configuration.getProperty('type') == 'plain')
 							&& pageData.route.context && pageData.route.context.tempSource){
-						var scriptContainer = document.createElement('div');
+						var scriptContainer = _document.createElement('div');
 						appContainer.appendChild(scriptContainer);
 						scriptContainer.innerHTML = pageData.route.context.tempSource;
 						pageData.route.context.tempSource = null;
@@ -225,7 +225,7 @@ import Mustache from 'mustache';
 						}
 					}
 					this.setDefaultListener(context, appContainer);
-					var navbar = document.querySelector('#'+this.container+'>.view>.navbar');
+					var navbar = _document.querySelector('#'+this.container+'>.view>.navbar');
 					if(navbar)
 						this.setDefaultListener(context, navbar);
 					var pageloadpromises = (lastscript == null) ? [] : [lastscript];
@@ -250,7 +250,7 @@ import Mustache from 'mustache';
 					Promise.all(pageloadpromises).then(function(){
 						if((!configuration.getProperty('type') || configuration.getProperty('type') == 'plain'))
 							module.framework7.preloader.hide();
-						document.dispatchEvent(new BobbleHead.Events.PageReadyEvent());
+						_document.dispatchEvent(new BobbleHead.Events.PageReadyEvent());
 						appContainer.dispatchEvent(new BobbleHead.Events.PageReadyEvent());
 						onSuccess();
 					});
@@ -268,7 +268,7 @@ import Mustache from 'mustache';
 				view.router.navigate('/'+page.vid, options);
 			}catch(e){
 				onFailure(e);
-				if(e instanceof RedirectException)
+				if(e instanceof BobbleHead.Exceptions.RedirectException)
 					if(e.vid == -1)
 						this.pageBack();
 					else
