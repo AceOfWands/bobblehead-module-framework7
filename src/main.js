@@ -167,9 +167,11 @@ import Mustache from 'mustache';
 		buildPageByObject(page, data, pageContext, onSuccess = BobbleHead.Util.defaultCallback, onFailure = BobbleHead.Util.defaultCallback, options = null, view){
 			try{
 				this.checkPage(page);
-				var processPage = async function(data, configuration, sandbox, modulesToLoad, onSuccess, onFailure, pageData){
+				var processPage = async function(data, configuration, modulesToLoad, onSuccess, onFailure, pageData){
 					var context = BobbleHead.Context.getGlobal();
 					var appContainer = pageData.el;
+					var sandbox = new BobbleHead.PageContext(appContainer);
+					this.currentPage.context = sandbox;
 					var observer = new MutationObserver(function(context, mutationsList){
 						for(var mutation of mutationsList) {
 							if (mutation.type == 'childList') {
@@ -254,7 +256,7 @@ import Mustache from 'mustache';
 						appContainer.dispatchEvent(new BobbleHead.Events.PageReadyEvent());
 						onSuccess();
 					});
-				}.bind(this,data, page.configuration, pageContext, page.modules, onSuccess, onFailure);
+				}.bind(this,data, page.configuration, page.modules, onSuccess, onFailure);
 				view.once('pageBeforeIn', processPage);
 				if(data || page.configuration.properties){
 					if(!options)
