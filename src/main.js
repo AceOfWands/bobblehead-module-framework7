@@ -289,8 +289,12 @@ import Mustache from 'mustache';
 						'history': false,
 						'reloadCurrent': true
 					}, module.framework7.views.current);
-				}else
+				}else{
+					module.framework7.views.current.router.once('pageInit',function(){
+						module.framework7.preloader.hide();
+					});
 					module.framework7.views.current.router.back();
+				}
 			}else
 				throw new BobbleHead.Exceptions.PageNotFoundException();
 		}
