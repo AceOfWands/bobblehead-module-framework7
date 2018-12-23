@@ -116,58 +116,8 @@ import Mustache from 'mustache';
 		constructor(){
 			super();
 			this.pageStack = {};
-		}
-		buildPage(virtualID, data){
-			return new Promise(function(resolve, reject) {
-				var page = BobbleHead.PageFactory.getPage(virtualID);
-				if(page){
-					var toHistory = false;
-					var ghosting = false;
-					var view = module.framework7.views.current;
-					var forceLock = false;
-					var duplicate = false;
-					if(!view)
-						view = module.framework7.views[0];
-					if(!view){
-						view = module.framework7.views.create(_document.querySelector('.view'));
-						forceLock = true;
-					}
-					if(!this.pageStack[view.id])
-						this.pageStack[view.id] = [];
-					if(this.currentPage && this.currentPage.page.ghostPage){
-						this.currentPage = this.pageStack[view.id].pop() || null;
-						ghosting = true;
-					}
-					if(!page.lock && this.currentPage!=null && (page.vid != this.currentPage.page.vid || page.allowDuplicate)){
-						if(!ghosting && this.currentPage.page.keepLive)
-							toHistory = true;
-						this.pageStack[view.id].push(this.currentPage);
-						if(page.vid == this.currentPage.page.vid)
-							duplicate = true;
-					}
-					if(page.lock)
-						this.pageStack[view.id] = [];
-					var pageBuild_mainFunc = function(domcontainer){
-						var pageContx = new BobbleHead.PageContext(domcontainer);
-						this.currentPage = new BobbleHead.VirtualPage(page, data, pageContx, resolve, reject);
-						this.checkVirtualPage(this.currentPage);
-						this.buildPageByObject(page, data, pageContx, resolve, reject, {
-							'clearPreviousHistory': page.lock || forceLock,
-							'history': !ghosting,
-							'reloadCurrent': duplicate
-						}, view);
-					}.bind(this);
-					pageBuild_mainFunc(module.root);
-				}else
-					reject(new BobbleHead.Exceptions.PageNotFoundException());
-			}.bind(this)).catch(function(e) {
-				BobbleHead.Util.log(e);
-			});
-		}
-		buildPageByObject(page, data, pageContext, onSuccess = BobbleHead.Util.defaultCallback, onFailure = BobbleHead.Util.defaultCallback, options = null, view){
-			try{
-				this.checkPage(page);
-				var processPage = async function(data, configuration, modulesToLoad, onSuccess, onFailure, pageData){
+			this.lastStillLoaded = -1;
+			this.processTask = async function(data, configuration, modulesToLoad, onSuccess, onFailure, pageData){
 					var context = BobbleHead.Context.getGlobal();
 					var appContainer = pageData.el;
 					var sandbox = new BobbleHead.PageContext(appContainer);
@@ -254,9 +204,63 @@ import Mustache from 'mustache';
 							module.framework7.preloader.hide();
 						_document.dispatchEvent(new BobbleHead.Events.PageReadyEvent());
 						appContainer.dispatchEvent(new BobbleHead.Events.PageReadyEvent());
-						onSuccess();
+						if(onSuccess)
+							onSuccess();
 					});
-				}.bind(this,data, page.configuration, page.modules, onSuccess, onFailure);
+				};
+		}
+		buildPage(virtualID, data){
+			return new Promise(function(resolve, reject) {
+				var page = BobbleHead.PageFactory.getPage(virtualID);
+				if(page){
+					var toHistory = false;
+					var ghosting = false;
+					var view = module.framework7.views.current;
+					var forceLock = false;
+					var duplicate = false;
+					if(!view)
+						view = module.framework7.views[0];
+					if(!view){
+						view = module.framework7.views.create(_document.querySelector('.view'));
+						forceLock = true;
+					}
+					if(!this.pageStack[view.id])
+						this.pageStack[view.id] = [];
+					if(this.currentPage && this.currentPage.page.ghostPage){
+						this.currentPage = this.pageStack[view.id].pop() || null;
+						ghosting = true;
+					}
+					if(!page.lock && this.currentPage!=null && (page.vid != this.currentPage.page.vid || page.allowDuplicate)){
+						if(!ghosting && this.currentPage.page.keepLive)
+							toHistory = true;
+						this.lastStillLoaded = this.pageStack[view.id].length - 1;
+						this.pageStack[view.id].push(this.currentPage);
+						if(page.vid == this.currentPage.page.vid)
+							duplicate = true;
+					}
+					if(page.lock)
+						this.pageStack[view.id] = [];
+					var pageBuild_mainFunc = function(domcontainer){
+						var pageContx = new BobbleHead.PageContext(domcontainer);
+						this.currentPage = new BobbleHead.VirtualPage(page, data, pageContx, resolve, reject);
+						this.checkVirtualPage(this.currentPage);
+						this.buildPageByObject(page, data, pageContx, resolve, reject, {
+							'clearPreviousHistory': page.lock || forceLock,
+							'history': !ghosting,
+							'reloadCurrent': duplicate
+						}, view);
+					}.bind(this);
+					pageBuild_mainFunc(module.root);
+				}else
+					reject(new BobbleHead.Exceptions.PageNotFoundException());
+			}.bind(this)).catch(function(e) {
+				BobbleHead.Util.log(e);
+			});
+		}
+		buildPageByObject(page, data, pageContext, onSuccess = BobbleHead.Util.defaultCallback, onFailure = BobbleHead.Util.defaultCallback, options = null, view){
+			try{
+				this.checkPage(page);
+				var processPage = this.processTask.bind(this,data, page.configuration, page.modules, onSuccess, onFailure);
 				view.once('pageBeforeIn', processPage);
 				if(data || page.configuration.properties){
 					if(!options)
@@ -293,7 +297,20 @@ import Mustache from 'mustache';
 					module.framework7.views.current.router.once('pageInit',function(){
 						module.framework7.preloader.hide();
 					});
-					module.framework7.views.current.router.back();
+					var options = null;
+					if(this.lastStillLoaded >= this.pageStack[module.framework7.views.current.id].length){
+						var processPage = this.processTask.bind(this, this.currentPage.data, this.currentPage.page.configuration, this.currentPage.page.modules, null, null);
+						module.framework7.views.current.once('pageBeforeIn', processPage);
+						if(this.currentPage.data || this.currentPage.page.configuration.properties){
+							if(!options)
+								options = {};
+							if(!options.context)
+								options.context = {};
+							options.context.pageData = this.currentPage.data;
+							options.context.pageConf = this.currentPage.page.configuration.properties;
+						}
+					}
+					module.framework7.views.current.router.back(null,options);
 				}
 			}else
 				throw new BobbleHead.Exceptions.PageNotFoundException();
