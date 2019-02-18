@@ -93,7 +93,7 @@ import Mustache from 'mustache';
 					});
 				}
 				// Framework7 App main instance
-				this.framework7  = new this.imports.Framework7({
+				var f7confs = {
 					root: configuration.properties.root, // App root element
 					id: configuration.properties.appid, // App bundle ID
 					name: configuration.properties.appname, // App name
@@ -102,8 +102,13 @@ import Mustache from 'mustache';
 					// Enable panel left visibility breakpoint
 					panel: {
 						leftBreakpoint: 960,
-					},
-				});
+					}
+				};
+				if(configuration.properties.clicks)
+					f7confs.clicks = configuration.properties.clicks;
+				if(configuration.properties.touch)
+					f7confs.touch = configuration.properties.touch;
+				this.framework7  = new this.imports.Framework7(f7confs);
 				// Dom7
 				this.app.addToGlobalContext('$$',this.imports.Dom7);
 				this.app.addToGlobalContext('framework7', this.framework7);
