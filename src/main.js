@@ -15,6 +15,7 @@ import Mustache from 'mustache';
 			this.root = null;
 			this.app = app;
 			this.re = /<script[\s\S]*?>[\s\S]*?<\/script>/gi;
+			this.currentAppContainer = null;
 		}
 		init(configuration){
 			super.init(configuration);
@@ -110,7 +111,12 @@ import Mustache from 'mustache';
 					f7confs.touch = configuration.properties.touch;
 				this.framework7  = new this.imports.Framework7(f7confs);
 				// Dom7
-				this.app.addToGlobalContext('$$',this.imports.Dom7);
+				this.app.addToGlobalContext('$$',function(el){
+					if(typeof el === 'string')
+						return this.imports.Dom7(this.currentAppContainer).find(el);
+					else
+						return this.imports.Dom7(el);
+				}.bind(this));
 				this.app.addToGlobalContext('framework7', this.framework7);
 			}else
 				throw new BobbleHead.Exceptions.GenericModuleException('root, appid or appname not setted in configuration for Framework7 module.');
@@ -124,7 +130,7 @@ import Mustache from 'mustache';
 			this.lastStillLoaded = -1;
 			this.processTask = async function(data, configuration, modulesToLoad, onSuccess, onFailure, pageData){
 					var context = BobbleHead.Context.getGlobal();
-					var appContainer = pageData.el;
+					var appContainer = module.currentAppContainer = pageData.el;
 					var sandbox = new BobbleHead.PageContext(appContainer);
 					this.currentPage.context = sandbox;
 					var observer = new MutationObserver(function(context, mutationsList){
@@ -298,6 +304,9 @@ import Mustache from 'mustache';
 						'history': false,
 						'reloadCurrent': true
 					}, module.framework7.views.current);
+					module.framework7.views.current.once('pageBeforeIn', (pageData) => {
+						module.currentAppContainer = pageData.el;
+					});
 				}else{
 					module.framework7.views.current.router.once('pageInit',function(){
 						module.framework7.preloader.hide();
@@ -314,6 +323,10 @@ import Mustache from 'mustache';
 							options.context.pageData = this.currentPage.data;
 							options.context.pageConf = this.currentPage.page.configuration.properties;
 						}
+					}else{
+						module.framework7.views.current.once('pageBeforeIn', (pageData) => {
+							module.currentAppContainer = pageData.el;
+						});
 					}
 					module.framework7.views.current.router.back(null,options);
 				}
