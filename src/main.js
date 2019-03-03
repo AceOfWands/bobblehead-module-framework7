@@ -112,10 +112,11 @@ import Mustache from 'mustache';
 				this.framework7  = new this.imports.Framework7(f7confs);
 				// Dom7
 				this.app.addToGlobalContext('$$',function(el){
-					if(typeof el === 'string')
+					var obj = this.imports.Dom7(el);
+					if(typeof el === 'string' && (obj.length !== 1 || Object.values(obj).indexOf(this.currentAppContainer) == -1))
 						return this.imports.Dom7(this.currentAppContainer).find(el);
 					else
-						return this.imports.Dom7(el);
+						return obj;
 				}.bind(this));
 				this.app.addToGlobalContext('framework7', this.framework7);
 			}else
@@ -220,6 +221,26 @@ import Mustache from 'mustache';
 					});
 				};
 		}
+		pauseTimers(){
+			var touts = [];
+			while(this.timers.timeouts.length>0){
+				var t = this.timers.timeouts.pop();
+				var rest = Date.now() - t[2];
+				if(rest < 0){
+					touts.push([t[1],-1*rest]);
+					this.clearTimer(BobbleHead.PageBuilder.Timers.TIMEOUT, t[0]);
+				}
+			}
+			var ints = [];
+			while(this.timers.intervals.length>0){
+				var t = this.timers.intervals.pop();
+				ints.push(t[1]);
+				this.clearTimer(BobbleHead.PageBuilder.Timers.INTERVAL, t[0]);
+			}
+			if(this.timers.stack.length == 2)
+				this.timers.stack.shift();
+			this.timers.stack.push([touts,ints]);
+		}
 		buildPage(virtualID, data){
 			return new Promise(function(resolve, reject) {
 				var page = BobbleHead.PageFactory.getPage(virtualID);
@@ -242,8 +263,11 @@ import Mustache from 'mustache';
 						ghosting = true;
 					}
 					if(!page.lock && this.currentPage!=null && (page.vid != this.currentPage.page.vid || page.allowDuplicate)){
-						if(!ghosting && this.currentPage.page.keepLive)
+						if(!ghosting && this.currentPage.page.keepLive){
 							toHistory = true;
+							this.pauseTimers();
+						}else
+							this.clearTimers();
 						this.lastStillLoaded = this.pageStack[view.id].length - 1;
 						this.pageStack[view.id].push(this.currentPage);
 						if(page.vid == this.currentPage.page.vid)
@@ -298,6 +322,7 @@ import Mustache from 'mustache';
 				var duplicated = this.currentPage.page.vid === vpage.page.vid;
 				this.currentPage = vpage;
 				this.checkVirtualPage(vpage);
+				this.clearTimers();
 				if(duplicated){
 					this.buildPageByObject(vpage.page, vpage.data, vpage.context, undefined, undefined, {
 						'clearPreviousHistory': false,
@@ -328,6 +353,8 @@ import Mustache from 'mustache';
 							module.currentAppContainer = pageData.el;
 						});
 					}
+					if(this.currentPage.page.keepLive)
+						this.resumeTimers();
 					module.framework7.views.current.router.back(null,options);
 				}
 			}else
