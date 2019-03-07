@@ -273,8 +273,10 @@ import Mustache from 'mustache';
 						if(page.vid == this.currentPage.page.vid)
 							duplicate = true;
 					}
-					if(page.lock)
+					if(page.lock){
 						this.pageStack[view.id] = [];
+						this.flushTimers();
+					}
 					var pageBuild_mainFunc = function(domcontainer){
 						var pageContx = new BobbleHead.PageContext(domcontainer);
 						this.currentPage = new BobbleHead.VirtualPage(page, data, pageContx, resolve, reject);
