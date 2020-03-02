@@ -105,6 +105,8 @@ import Mustache from 'mustache';
 						leftBreakpoint: 960,
 					}
 				};
+				if(configuration.properties.view)
+					f7confs.view = configuration.properties.view;
 				if(configuration.properties.clicks)
 					f7confs.clicks = configuration.properties.clicks;
 				if(configuration.properties.touch)
@@ -353,6 +355,8 @@ import Mustache from 'mustache';
 					}else{
 						module.framework7.views.current.once('pageBeforeIn', (pageData) => {
 							module.currentAppContainer = pageData.el;
+							_document.dispatchEvent(new BobbleHead.Events.PageReadyEvent());
+							module.currentAppContainer.dispatchEvent(new BobbleHead.Events.PageReadyEvent());
 						});
 					}
 					if(this.currentPage.page.keepLive)
